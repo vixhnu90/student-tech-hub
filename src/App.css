@@ -4,6 +4,38 @@
   box-sizing: border-box;
 }
 
+@keyframes progress-pulse {
+  70% {
+    box-shadow: 0 0 0 7px rgba(105, 227, 177, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(105, 227, 177, 0);
+  }
+}
+
+@keyframes status-blink {
+  to {
+    visibility: hidden;
+  }
+}
+
+@keyframes window-glow {
+  50% {
+    box-shadow:
+      0 30px 70px rgba(30, 40, 75, 0.22),
+      0 0 28px rgba(105, 227, 177, 0.2);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-window,
+  .build-pulse > span,
+  .floating-pulse-dot,
+  .progress-title i {
+    animation: none;
+  }
+}
+
 :root {
   font-family: "Inter", sans-serif;
   color: #1f2937;
@@ -455,6 +487,14 @@ button {
   margin-top: 30px;
 }
 
+.hero-start-button {
+  min-height: 58px;
+  padding: 0 26px;
+  gap: 10px;
+  font-size: 16px;
+  font-weight: 800;
+}
+
 .hero-trust {
   display: flex;
   align-items: center;
@@ -475,6 +515,109 @@ button {
 .hero-trust small {
   color: #737e95;
   font-size: 12px;
+}
+
+.home-sign-in {
+  position: relative;
+  width: min(460px, calc(100vw - 32px));
+  display: grid;
+  gap: 13px;
+  margin: 0;
+  padding: 30px;
+  border: 1px solid #dfe7f5;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 28px 80px rgba(19, 35, 68, 0.25);
+  text-align: left;
+}
+
+.sign-in-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(20, 31, 54, 0.52);
+  backdrop-filter: blur(5px);
+}
+
+.sign-in-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  color: #64728a;
+  background: #f2f5fa;
+}
+
+.sign-in-close:hover {
+  color: #17233d;
+  background: #e8edf6;
+}
+
+.home-sign-in-title {
+  color: #17233d;
+  font-size: 21px;
+  font-weight: 800;
+}
+
+.home-sign-in-description {
+  margin: -7px 0 3px;
+  color: #68758c;
+  font-size: 13px;
+}
+
+.home-sign-in-fields {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 11px;
+}
+
+.home-sign-in-fields label {
+  display: grid;
+  gap: 5px;
+  color: #55637c;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.home-sign-in-fields label:last-child {
+  grid-column: auto;
+}
+
+.home-sign-in-fields input {
+  width: 100%;
+  min-height: 42px;
+  padding: 0 11px;
+  border: 1px solid #dce4f1;
+  border-radius: 10px;
+  color: #17233d;
+  background: #fff;
+  font: inherit;
+  font-size: 13px;
+}
+
+.home-sign-in-fields input:focus {
+  outline: 3px solid rgba(86, 94, 255, 0.16);
+  border-color: #8d98f7;
+}
+
+.home-sign-in .primary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+}
+
+.home-sign-in > small {
+  color: #69758a;
+  font-size: 10px;
+  text-align: center;
 }
 
 .trust-avatars {
@@ -508,6 +651,7 @@ button {
 }
 
 .dashboard-window {
+  position: relative;
   width: min(480px, 100%);
   overflow: hidden;
   border: 1px solid #303852;
@@ -515,6 +659,7 @@ button {
   background: #171d2e;
   box-shadow: 0 30px 70px rgba(30, 40, 75, 0.22);
   transform: rotate(1deg);
+  animation: window-glow 2.8s ease-in-out infinite;
 }
 
 .window-top {
@@ -542,6 +687,48 @@ button {
 
 .window-body {
   padding: 30px;
+}
+
+.build-pulse {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 18px;
+  color: #9ca9c6;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 1px;
+}
+
+.build-pulse > span,
+.floating-pulse-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #69e3b1;
+  box-shadow: 0 0 0 0 rgba(105, 227, 177, 0.56);
+  animation: progress-pulse 1.8s ease-out infinite;
+}
+
+.build-pulse > span:nth-child(2) {
+  animation-delay: 0.25s;
+}
+
+.build-pulse > span:nth-child(3) {
+  animation-delay: 0.5s;
+}
+
+.progress-title {
+  width: 100%;
+}
+
+.progress-title i {
+  width: 7px;
+  height: 7px;
+  margin-left: auto;
+  border-radius: 50%;
+  background: #69e3b1;
+  animation: status-blink 1.25s steps(2, start) infinite;
 }
 
 .code-line {
@@ -606,6 +793,12 @@ button {
 
 .floating-card svg {
   color: #5865f2;
+}
+
+.floating-pulse-dot {
+  width: 10px;
+  height: 10px;
+  flex: 0 0 auto;
 }
 
 .floating-card div {
@@ -842,6 +1035,43 @@ button {
 
 .preview-step > svg {
   margin-left: auto;
+}
+
+.example-caption {
+  display: block;
+  margin-top: 14px;
+  color: #758199;
+  font-size: 11px;
+}
+
+.footer-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 56px;
+  padding: 27px 30px;
+  border: 1px solid #dfe6f4;
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 90% 0%, rgba(88, 101, 242, 0.12), transparent 40%),
+    #ffffff;
+  box-shadow: 0 14px 38px rgba(36, 76, 145, 0.08);
+}
+
+.footer-cta h2 {
+  margin-top: 7px;
+  color: #17233d;
+  font-size: clamp(1.2rem, 2vw, 1.6rem);
+  letter-spacing: -0.04em;
+}
+
+.footer-cta .primary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex: 0 0 auto;
 }
 
 /* =========================
@@ -1167,6 +1397,13 @@ button {
 .activity-item span {
   color: #626e84;
   font-size: 10px;
+}
+
+.empty-activity {
+  margin: 14px 0 2px;
+  color: #68758c;
+  font-size: 12px;
+  line-height: 1.6;
 }
 
 /* =========================
@@ -1587,6 +1824,11 @@ button {
   background: #eff0ff;
 }
 
+.step-status.pending {
+  color: #9a6411;
+  background: #fff5df;
+}
+
 .step-status.locked {
   color: #9299a8;
   background: #f0f2f5;
@@ -1594,6 +1836,107 @@ button {
 
 .road-card .small-button {
   margin-top: 16px;
+}
+
+.proof-submission {
+  margin-top: 16px;
+  padding: 15px;
+  border: 1px solid #e1e8f4;
+  border-radius: 13px;
+  background: #f8faff;
+}
+
+.proof-preview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 13px;
+}
+
+.proof-preview img {
+  width: 68px;
+  height: 56px;
+  flex: 0 0 auto;
+  border-radius: 9px;
+  object-fit: cover;
+  background: #e9eef7;
+}
+
+.proof-preview > div {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.proof-preview strong {
+  overflow: hidden;
+  color: #263752;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.proof-preview span,
+.proof-review-note {
+  color: #68758c;
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.proof-upload-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.proof-file-input {
+  min-height: 38px;
+  max-width: 100%;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
+  overflow: hidden;
+  border: 1px solid #d9e2f1;
+  border-radius: 10px;
+  color: #4b5a75;
+  background: #fff;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.proof-file-input span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.proof-file-input input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+
+.proof-upload-form .small-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 0;
+}
+
+.proof-upload-form .small-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.proof-review-note {
+  margin-top: 12px !important;
 }
 
 .roadmap-bottom {
@@ -2186,6 +2529,10 @@ button {
     margin-right: auto;
   }
 
+  .home-sign-in {
+    text-align: left;
+  }
+
   .hero-actions,
   .hero-trust {
     justify-content: center;
@@ -2343,6 +2690,22 @@ button {
     flex-direction: column;
   }
 
+  .home-sign-in {
+    padding: 14px;
+  }
+
+  .home-sign-in-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .home-sign-in-fields label:last-child {
+    grid-column: auto;
+  }
+
+  .home-sign-in .primary-button {
+    width: 100%;
+  }
+
   .hero-actions button {
     width: 100%;
   }
@@ -2383,6 +2746,28 @@ button {
   .build-section {
     padding-top: 55px;
     padding-bottom: 65px;
+  }
+
+  .footer-cta {
+    align-items: stretch;
+    flex-direction: column;
+    margin-bottom: 38px;
+    padding: 22px;
+  }
+
+  .footer-cta .primary-button {
+    width: 100%;
+  }
+
+  .proof-upload-form {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .proof-upload-form .proof-file-input,
+  .proof-upload-form .small-button {
+    justify-content: center;
+    width: 100%;
   }
 
   .stats-grid {

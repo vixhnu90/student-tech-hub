@@ -17,6 +17,7 @@ import {
   Share2,
   Sparkles,
   Target,
+  Upload,
   UserCircle,
   X,
 } from "lucide-react";
@@ -25,6 +26,7 @@ import "./App.css";
 
 const PROJECTS = {
   "AI / Machine Learning": {
+    category: "AI / Machine Learning",
     title: "Smart Campus Waste Classifier",
     description:
       "Build an AI model that classifies campus waste into categories such as recyclable, organic, and general waste.",
@@ -35,6 +37,7 @@ const PROJECTS = {
   },
 
   "Web Development": {
+    category: "Web Development",
     title: "Student Skill Exchange Hub",
     description:
       "Create a web platform where students can exchange skills, find learning partners, and collaborate on projects.",
@@ -45,6 +48,7 @@ const PROJECTS = {
   },
 
   "Mobile Development": {
+    category: "Mobile Development",
     title: "Campus Bicycle Sharing Tracker",
     description:
       "Build a mobile application that helps students find, reserve, and track shared bicycles around campus.",
@@ -55,6 +59,7 @@ const PROJECTS = {
   },
 
   "IoT & Embedded": {
+    category: "IoT & Embedded",
     title: "Smart Classroom Energy Monitor",
     description:
       "Create an IoT system that monitors classroom electricity usage and provides alerts when energy consumption is unusually high.",
@@ -65,6 +70,7 @@ const PROJECTS = {
   },
 
   Cybersecurity: {
+    category: "Cybersecurity",
     title: "Student Phishing Awareness Simulator",
     description:
       "Develop a safe educational simulator that teaches students how to recognize common phishing techniques.",
@@ -75,6 +81,7 @@ const PROJECTS = {
   },
 
   "Data Science": {
+    category: "Data Science",
     title: "Campus Placement Insights",
     description:
       "Analyze placement data to discover trends in skills, packages, companies, and student performance.",
@@ -85,6 +92,7 @@ const PROJECTS = {
   },
 
   "Cloud / DevOps": {
+    category: "Cloud / DevOps",
     title: "Student CI/CD Deployment Hub",
     description:
       "Build a simple deployment platform that demonstrates automated testing, version control, and cloud deployment.",
@@ -101,51 +109,109 @@ const ROADMAP_STEPS = [
     title: "Project Environment & Setup",
     description:
       "Set up your development environment, repository, project structure, and required dependencies.",
-    status: "done",
   },
   {
     number: "02",
     title: "Data & Resource Preparation",
     description:
       "Collect the required resources and organize the data, assets, or information needed for your project.",
-    status: "done",
   },
   {
     number: "03",
     title: "Core Development",
     description:
       "Build the main functionality and implement the core architecture of your project.",
-    status: "done",
   },
   {
     number: "04",
     title: "Testing & Evaluation",
     description:
       "Test the project, identify problems, improve performance, and validate the expected output.",
-    status: "active",
   },
   {
     number: "05",
     title: "Backend / API Integration",
     description:
       "Connect your frontend with APIs, services, databases, or backend functionality.",
-    status: "locked",
   },
   {
     number: "06",
     title: "User Interface & Integration",
     description:
       "Connect all components and polish the user experience across desktop and mobile devices.",
-    status: "locked",
   },
   {
     number: "07",
     title: "Deployment & Portfolio Showcase",
     description:
       "Deploy the project and prepare documentation so you can showcase it in your portfolio.",
-    status: "locked",
   },
 ];
+
+function createRoadmapSteps(project) {
+  const primarySkill = project.skills[0] || project.category;
+  const secondarySkill = project.skills[1] || project.category;
+
+  return ROADMAP_STEPS.map((step, index) => {
+    const projectSpecificSteps = {
+      1: {
+        title: `${project.category} Resource Preparation`,
+        description: `Gather the datasets, content, or resources needed for ${project.title}.`,
+      },
+      2: {
+        title: `Build ${project.title}`,
+        description: `Develop the core features of ${project.title} using ${primarySkill}.`,
+      },
+      3: {
+        title: `${secondarySkill} Integration & Testing`,
+        description: `Integrate ${secondarySkill}, test the project, and validate its expected results.`,
+      },
+    };
+    const details = projectSpecificSteps[index];
+
+    return {
+      ...step,
+      ...(details || {}),
+      status: index === 0 ? "active" : "locked",
+      proof: null,
+    };
+  });
+}
+
+function readSavedUser() {
+  try {
+    const user = JSON.parse(
+      window.localStorage.getItem("student-tech-hub-user") || "null"
+    );
+    return user && typeof user.name === "string" ? user : null;
+  } catch {
+    return null;
+  }
+}
+
+function readSavedStreak() {
+  try {
+    const streak = JSON.parse(
+      window.localStorage.getItem("student-tech-hub-streak") || "null"
+    );
+    return streak && Number.isInteger(streak.count) ? streak : { count: 0, lastActive: "" };
+  } catch {
+    return { count: 0, lastActive: "" };
+  }
+}
+
+function getGreeting(hour = new Date().getHours()) {
+  if (hour < 12) return "Good morning";
+  if (hour < 17) return "Good afternoon";
+  return "Good evening";
+}
+
+function getLocalDateKey(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
 
 function pdfSafeText(value) {
   return String(value)
@@ -249,40 +315,81 @@ function getValidWebUrl(value) {
 function App() {
   const [page, setPage] = useState("home");
   const [mobileMenu, setMobileMenu] = useState(false);
+  const [user, setUser] = useState(readSavedUser);
+  const [streak, setStreak] = useState(readSavedStreak);
 
   const [selectedProject, setSelectedProject] = useState(
     PROJECTS["AI / Machine Learning"]
   );
-  const [roadmapSteps, setRoadmapSteps] = useState(ROADMAP_STEPS);
+  const [roadmapSteps, setRoadmapSteps] = useState(() =>
+    createRoadmapSteps(PROJECTS["AI / Machine Learning"])
+  );
   const [projectLinks, setProjectLinks] = useState({});
 
   const selectProject = (project) => {
     setSelectedProject(project);
-    setRoadmapSteps(ROADMAP_STEPS);
+    setRoadmapSteps(createRoadmapSteps(project));
   };
 
-  const completeCurrentStep = () => {
-    setRoadmapSteps((steps) => {
-      const activeIndex = steps.findIndex(
-        (step) => step.status === "active"
-      );
+  const recordActiveDay = () => {
+    const todayDate = new Date();
+    const today = getLocalDateKey(todayDate);
+    const yesterdayDate = new Date(todayDate);
+    yesterdayDate.setDate(yesterdayDate.getDate() - 1);
+    const yesterday = getLocalDateKey(yesterdayDate);
+    const nextStreak = {
+      count:
+        streak.lastActive === today
+          ? streak.count
+          : streak.lastActive === yesterday
+            ? streak.count + 1
+            : 1,
+      lastActive: today,
+    };
 
-      if (activeIndex === -1) {
-        return steps;
-      }
+    setStreak(nextStreak);
+    window.localStorage.setItem(
+      "student-tech-hub-streak",
+      JSON.stringify(nextStreak)
+    );
+  };
 
-      return steps.map((step, index) => {
-        if (index === activeIndex) {
-          return { ...step, status: "done" };
-        }
+  const handleDemoSignIn = (event) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const nextUser = {
+      name: String(formData.get("name")).trim(),
+      email: String(formData.get("email")).trim(),
+    };
 
-        if (index === activeIndex + 1) {
-          return { ...step, status: "active" };
-        }
+    setUser(nextUser);
+    window.localStorage.setItem(
+      "student-tech-hub-user",
+      JSON.stringify(nextUser)
+    );
+    recordActiveDay();
+    navigate("dashboard");
+  };
 
-        return step;
-      });
-    });
+  const submitStepProof = (stepNumber, file) => {
+    if (!file || !file.type.startsWith("image/")) {
+      return;
+    }
+
+    setRoadmapSteps((steps) =>
+      steps.map((step) =>
+        step.number === stepNumber
+          ? {
+              ...step,
+              proof: {
+                name: file.name,
+                previewUrl: URL.createObjectURL(file),
+                submittedAt: new Date().toISOString(),
+              },
+            }
+          : step
+      )
+    );
   };
 
   const projectCompleted = roadmapSteps.every(
@@ -306,20 +413,33 @@ function App() {
 
   return (
     <div className="app">
-      <Header
-        page={page}
-        navigate={navigate}
-        mobileMenu={mobileMenu}
-        setMobileMenu={setMobileMenu}
-      />
+      {page !== "home" && (
+        <Header
+          page={page}
+          navigate={navigate}
+          mobileMenu={mobileMenu}
+          setMobileMenu={setMobileMenu}
+        />
+      )}
 
       <main>
-        {page === "home" && <Home navigate={navigate} />}
+        {page === "home" && (
+          <Home
+            navigate={navigate}
+            project={selectedProject}
+            steps={roadmapSteps}
+            user={user}
+            onSignIn={handleDemoSignIn}
+          />
+        )}
 
         {page === "dashboard" && (
           <Dashboard
             navigate={navigate}
             project={selectedProject}
+            steps={roadmapSteps}
+            user={user}
+            streak={streak.count}
           />
         )}
 
@@ -336,7 +456,7 @@ function App() {
             project={selectedProject}
             navigate={navigate}
             steps={roadmapSteps}
-            completeCurrentStep={completeCurrentStep}
+            submitStepProof={submitStepProof}
           />
         )}
 
@@ -468,7 +588,14 @@ function Header({
    HOME
 ========================= */
 
-function Home({ navigate }) {
+function Home({ navigate, project, steps, user, onSignIn }) {
+  const [signInOpen, setSignInOpen] = useState(false);
+  const completedSteps = steps.filter(
+    (step) => step.status === "done"
+  ).length;
+  const progress = Math.round((completedSteps / steps.length) * 100);
+  const startBuilding = () => setSignInOpen(true);
+
   return (
     <>
       <section className="hero page-section">
@@ -491,19 +618,11 @@ function Home({ navigate }) {
 
           <div className="hero-actions">
             <button
-              className="primary-button"
-              onClick={() => navigate("assistant")}
+              className="primary-button hero-start-button"
+              onClick={startBuilding}
             >
               Start Building
               <ArrowRight size={18} />
-            </button>
-
-            <button
-              className="secondary-button"
-              onClick={() => navigate("dashboard")}
-            >
-              <Play size={17} />
-              Explore Dashboard
             </button>
           </div>
 
@@ -541,26 +660,36 @@ function Home({ navigate }) {
             </div>
 
             <div className="window-body">
+              <div className="build-pulse" aria-hidden="true">
+                <span />
+                <span />
+                <span />
+                <strong>BUILD IN PROGRESS</strong>
+              </div>
               <div className="code-line short" />
               <div className="code-line long" />
               <div className="code-line medium" />
 
               <div className="code-card">
-                <div className="code-card-title">
+                <div className="code-card-title progress-title">
                   <CheckCircle2 size={17} />
-                  Project Progress
+                  <span>Progressing project</span>
+                  <i aria-hidden="true" />
                 </div>
 
                 <div className="progress-track">
                   <div
                     className="progress-fill"
-                    style={{ width: "72%" }}
+                    style={{ width: `${progress}%` }}
                   />
                 </div>
 
                 <div className="progress-info">
-                  <span>72% complete</span>
-                  <span>Step 4 of 7</span>
+                  <span>{progress}% verified</span>
+                  <span>
+                    Step {Math.min(completedSteps + 1, steps.length)} of{" "}
+                    {steps.length}
+                  </span>
                 </div>
               </div>
 
@@ -570,10 +699,10 @@ function Home({ navigate }) {
           </div>
 
           <div className="floating-card floating-card-one">
-            <CheckCircle2 size={18} />
+            <span className="floating-pulse-dot" />
             <div>
-              <strong>Milestone complete</strong>
-              <span>Testing phase finished</span>
+              <strong>Project is progressing</strong>
+              <span>One verified step at a time</span>
             </div>
           </div>
 
@@ -654,8 +783,8 @@ function Home({ navigate }) {
         <div className="preview-card">
           <div className="preview-top">
             <div>
-              <small>ACTIVE PROJECT</small>
-              <h3>Smart Campus Waste Classifier</h3>
+              <small>EXAMPLE PROJECT</small>
+              <h3>{project.title}</h3>
             </div>
 
             <span className="status-pill">In Progress</span>
@@ -664,42 +793,132 @@ function Home({ navigate }) {
           <div className="preview-progress">
             <div className="preview-progress-label">
               <span>Overall progress</span>
-              <strong>64%</strong>
+              <strong>{progress}%</strong>
             </div>
 
             <div className="progress-track">
               <div
                 className="progress-fill"
-                style={{ width: "64%" }}
+                style={{ width: `${progress}%` }}
               />
             </div>
           </div>
 
           <div className="preview-steps">
-            <PreviewStep
-              number="01"
-              text="Environment setup"
-              done
-            />
-            <PreviewStep
-              number="02"
-              text="Data preparation"
-              done
-            />
-            <PreviewStep
-              number="03"
-              text="Model development"
-              active
-            />
-            <PreviewStep
-              number="04"
-              text="Testing & evaluation"
-            />
+            {steps.slice(0, 4).map((step) => (
+              <PreviewStep
+                key={step.number}
+                number={step.number}
+                text={step.title}
+                done={step.status === "done"}
+                active={step.status === "active"}
+              />
+            ))}
           </div>
+          <span className="example-caption">
+            Example project for {project.category}
+          </span>
         </div>
       </section>
 
+      <section className="footer-cta page-section">
+        <div>
+          <span className="eyebrow">READY WHEN YOU ARE</span>
+          <h2>Turn your next idea into a real project.</h2>
+        </div>
+        <button
+          className="primary-button hero-start-button"
+          onClick={startBuilding}
+        >
+          Start Building
+          <ArrowRight size={18} />
+        </button>
+      </section>
+
       <Footer navigate={navigate} />
+
+      {signInOpen && (
+        <div
+          className="sign-in-overlay"
+          onClick={(event) => {
+            if (event.target === event.currentTarget) {
+              setSignInOpen(false);
+            }
+          }}
+        >
+          <form
+            id="home-sign-in"
+            className="home-sign-in"
+            onSubmit={onSignIn}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="home-sign-in-title"
+          >
+            <button
+              className="sign-in-close"
+              type="button"
+              onClick={() => setSignInOpen(false)}
+              aria-label="Close sign-in form"
+            >
+              <X size={19} />
+            </button>
+            <span
+              id="home-sign-in-title"
+              className="home-sign-in-title"
+            >
+              Let’s get you started
+            </span>
+            <p className="home-sign-in-description">
+              Enter your details to continue to your dashboard.
+            </p>
+            <div className="home-sign-in-fields">
+              <label>
+                <span>Your name</span>
+                <input
+                  name="name"
+                  type="text"
+                  autoComplete="name"
+                  defaultValue={user?.name || ""}
+                  placeholder="Enter your name"
+                  autoFocus
+                  required
+                />
+              </label>
+              <label>
+                <span>Email</span>
+                <input
+                  name="email"
+                  type="email"
+                  autoComplete="email"
+                  defaultValue={user?.email || ""}
+                  placeholder="you@example.com"
+                  required
+                />
+              </label>
+              <label>
+                <span>Password</span>
+                <input
+                  name="password"
+                  type="password"
+                  autoComplete="current-password"
+                  placeholder="Enter a demo password"
+                  required
+                />
+              </label>
+            </div>
+            <button
+              className="primary-button hero-start-button"
+              type="submit"
+            >
+              Continue to Dashboard
+              <ArrowRight size={18} />
+            </button>
+            <small>
+              Demo sign-in only. Your password is not saved or sent.
+            </small>
+          </form>
+        </div>
+      )}
     </>
   );
 }
@@ -776,7 +995,22 @@ function ArchitectureStep({
    DASHBOARD
 ========================= */
 
-function Dashboard({ navigate, project }) {
+function Dashboard({ navigate, project, steps, user, streak }) {
+  const completedSteps = steps.filter(
+    (step) => step.status === "done"
+  ).length;
+  const learningProgress = Math.round(
+    (completedSteps / steps.length) * 100
+  );
+  const currentStep = steps.find((step) => step.status === "active");
+  const latestProof = [...steps]
+    .filter((step) => step.proof)
+    .sort(
+      (first, second) =>
+        new Date(second.proof.submittedAt) -
+        new Date(first.proof.submittedAt)
+    )[0];
+
   return (
     <div className="page-container dashboard-page">
       <div className="dashboard-heading">
@@ -786,10 +1020,14 @@ function Dashboard({ navigate, project }) {
             YOUR DASHBOARD
           </div>
 
-          <h1>Good evening, builder.</h1>
+          <h1>
+            {getGreeting()}, {user?.name || "builder"}.
+          </h1>
 
           <p>
-            Keep moving forward. Your next milestone is waiting.
+            {currentStep
+              ? `Keep moving forward. Your next step is ${currentStep.title}.`
+              : "Your project roadmap is complete. Great work."}
           </p>
         </div>
 
@@ -805,30 +1043,30 @@ function Dashboard({ navigate, project }) {
       <div className="stats-grid">
         <StatCard
           icon={<Flame size={20} />}
-          value="12"
+          value={streak}
           label="Day streak"
-          note="+2 from last week"
+          note={streak === 1 ? "Active today" : "Consecutive active days"}
         />
 
         <StatCard
           icon={<CheckCircle2 size={20} />}
-          value="18"
+          value={completedSteps}
           label="Tasks completed"
-          note="Keep going"
+          note="Roadmap steps approved"
         />
 
         <StatCard
           icon={<Folder size={20} />}
-          value="04"
+          value={project ? "01" : "00"}
           label="Projects"
-          note="2 published"
+          note={project ? "1 active project" : "No active projects"}
         />
 
         <StatCard
           icon={<Target size={20} />}
-          value="72%"
+          value={`${learningProgress}%`}
           label="Learning progress"
-          note="Above average"
+          note={`${completedSteps} of ${steps.length} steps approved`}
         />
       </div>
 
@@ -856,14 +1094,14 @@ function Dashboard({ navigate, project }) {
 
           <div className="project-progress">
             <div>
-              <span>Project progress</span>
-              <strong>64%</strong>
+              <span>Verified project progress</span>
+              <strong>{learningProgress}%</strong>
             </div>
 
             <div className="progress-track">
               <div
                 className="progress-fill"
-                style={{ width: "64%" }}
+                style={{ width: `${learningProgress}%` }}
               />
             </div>
           </div>
@@ -875,9 +1113,16 @@ function Dashboard({ navigate, project }) {
 
             <div>
               <small>NEXT STEP</small>
-              <strong>Testing & Evaluation</strong>
+              <strong>
+                {currentStep?.proof
+                  ? "Awaiting proof review"
+                  : currentStep?.title || "All steps approved"}
+              </strong>
               <span>
-                Validate your project and improve the result.
+                {currentStep?.proof
+                  ? `${currentStep.title} proof is awaiting review in this session.`
+                  : currentStep?.description ||
+                    "Your project has no remaining steps."}
               </span>
             </div>
 
@@ -885,7 +1130,7 @@ function Dashboard({ navigate, project }) {
               className="small-button"
               onClick={() => navigate("roadmap")}
             >
-              Continue
+              {currentStep?.proof ? "View proof" : "Continue"}
               <ArrowRight size={15} />
             </button>
           </div>
@@ -926,23 +1171,28 @@ function Dashboard({ navigate, project }) {
               </button>
             </div>
 
-            <ActivityItem
-              icon={<Check size={15} />}
-              title="Completed project setup"
-              time="Today, 4:20 PM"
-            />
-
-            <ActivityItem
-              icon={<GitBranch size={15} />}
-              title="Roadmap updated"
-              time="Yesterday"
-            />
-
-            <ActivityItem
-              icon={<Sparkles size={15} />}
-              title="AI suggestion generated"
-              time="Yesterday"
-            />
+            {latestProof ? (
+              <ActivityItem
+                icon={<Upload size={15} />}
+                title={`Proof submitted: ${latestProof.title}`}
+                time={new Date(
+                  latestProof.proof.submittedAt
+                ).toLocaleString()}
+              />
+            ) : completedSteps > 0 ? (
+              <ActivityItem
+                icon={<Check size={15} />}
+                title={`${completedSteps} roadmap step${
+                  completedSteps === 1 ? "" : "s"
+                } approved`}
+                time="Based on your project roadmap"
+              />
+            ) : (
+              <p className="empty-activity">
+                No steps have been approved yet. Upload a proof photo
+                for the current roadmap step to request review.
+              </p>
+            )}
           </div>
         </aside>
       </div>
@@ -1406,7 +1656,7 @@ function Roadmap({
   project,
   navigate,
   steps,
-  completeCurrentStep,
+  submitStepProof,
 }) {
   const completedSteps = steps.filter(
     (step) => step.status === "done"
@@ -1467,7 +1717,7 @@ function Roadmap({
           <RoadStep
             key={step.number}
             step={step}
-            completeCurrentStep={completeCurrentStep}
+            submitStepProof={submitStepProof}
           />
         ))}
       </div>
@@ -1479,8 +1729,9 @@ function Roadmap({
           <div>
             <strong>Why this step matters</strong>
             <p>
-              Testing helps you find weaknesses before you publish
-              your project or add it to your portfolio.
+              {steps.find((step) => step.status === "active")
+                ?.description ||
+                `Every verified step brings ${project.title} closer to your portfolio.`}
             </p>
           </div>
         </div>
@@ -1497,10 +1748,11 @@ function Roadmap({
   );
 }
 
-function RoadStep({ step, completeCurrentStep }) {
+function RoadStep({ step, submitStepProof }) {
   const isDone = step.status === "done";
   const isActive = step.status === "active";
   const isLocked = step.status === "locked";
+  const [proofFile, setProofFile] = useState(null);
 
   return (
     <div
@@ -1529,12 +1781,16 @@ function RoadStep({ step, completeCurrentStep }) {
           </div>
 
           <span
-            className={`step-status ${step.status}`}
+            className={`step-status ${
+              step.proof && isActive ? "pending" : step.status
+            }`}
           >
             {isDone
               ? "Completed"
               : isActive
-              ? "Current"
+              ? step.proof
+                ? "Pending review"
+                : "Current"
               : "Locked"}
           </span>
         </div>
@@ -1542,13 +1798,63 @@ function RoadStep({ step, completeCurrentStep }) {
         <p>{step.description}</p>
 
         {isActive && (
-          <button
-            className="small-button"
-            onClick={completeCurrentStep}
-          >
-            Mark Step Complete
-            <Check size={15} />
-          </button>
+          <div className="proof-submission">
+            {step.proof && (
+              <div className="proof-preview">
+                <img src={step.proof.previewUrl} alt="Submitted proof" />
+                <div>
+                  <strong>{step.proof.name}</strong>
+                  <span>
+                    Submitted{" "}
+                    {new Date(step.proof.submittedAt).toLocaleString()} ·
+                    awaiting reviewer approval
+                  </span>
+                </div>
+              </div>
+            )}
+
+            <form
+              className="proof-upload-form"
+              onSubmit={(event) => {
+                event.preventDefault();
+                submitStepProof(step.number, proofFile);
+                setProofFile(null);
+                event.currentTarget.reset();
+              }}
+            >
+              <label className="proof-file-input">
+                <Upload size={16} />
+                <span>
+                  {proofFile
+                    ? proofFile.name
+                    : step.proof
+                      ? "Choose another photo"
+                      : "Choose a proof photo"}
+                </span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(event) =>
+                    setProofFile(event.target.files?.[0] || null)
+                  }
+                  aria-label={`Choose photo proof for ${step.title}`}
+                />
+              </label>
+              <button
+                className="small-button"
+                type="submit"
+                disabled={!proofFile}
+              >
+                {step.proof ? "Replace proof" : "Submit for review"}
+                <ArrowRight size={15} />
+              </button>
+            </form>
+            <p className="proof-review-note">
+              Demo mode: your photo stays in this browser session. It is
+              not sent to a reviewer, and the step will remain pending
+              until a reviewer workflow is connected.
+            </p>
+          </div>
         )}
       </div>
     </div>
