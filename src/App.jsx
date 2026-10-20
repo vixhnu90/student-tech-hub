@@ -1,25 +1,34 @@
 import { useState } from "react";
 import {
   ArrowRight,
+  BarChart3,
   Bell,
+  Bot,
+  BriefcaseBusiness,
+  BrainCircuit,
   Check,
   CheckCircle2,
+  Cloud,
   Download,
   ExternalLink,
   Flame,
   Folder,
   GitBranch,
+  Globe,
   Lightbulb,
   Link,
   Lock,
-  Menu,
   Play,
+  Route,
   Share2,
+  ShieldCheck,
+  Smartphone,
   Sparkles,
   Target,
   Upload,
   UserCircle,
   X,
+  Zap,
 } from "lucide-react";
 
 import "./App.css";
@@ -33,7 +42,7 @@ const PROJECTS = {
     difficulty: "Intermediate",
     duration: "3–4 weeks",
     skills: ["Python", "Machine Learning", "Computer Vision"],
-    icon: "🤖",
+    icon: BrainCircuit,
   },
 
   "Web Development": {
@@ -44,7 +53,7 @@ const PROJECTS = {
     difficulty: "Intermediate",
     duration: "2–3 weeks",
     skills: ["React", "JavaScript", "CSS"],
-    icon: "🌐",
+    icon: Globe,
   },
 
   "Mobile Development": {
@@ -55,7 +64,7 @@ const PROJECTS = {
     difficulty: "Intermediate",
     duration: "3–4 weeks",
     skills: ["React Native", "Mobile UI", "Firebase"],
-    icon: "📱",
+    icon: Smartphone,
   },
 
   "IoT & Embedded": {
@@ -66,7 +75,7 @@ const PROJECTS = {
     difficulty: "Intermediate",
     duration: "3–4 weeks",
     skills: ["ESP32", "Sensors", "IoT"],
-    icon: "⚡",
+    icon: Zap,
   },
 
   Cybersecurity: {
@@ -77,7 +86,7 @@ const PROJECTS = {
     difficulty: "Intermediate",
     duration: "2–3 weeks",
     skills: ["Cybersecurity", "Web", "Security Awareness"],
-    icon: "🔐",
+    icon: ShieldCheck,
   },
 
   "Data Science": {
@@ -88,7 +97,7 @@ const PROJECTS = {
     difficulty: "Beginner",
     duration: "2–3 weeks",
     skills: ["Python", "Pandas", "Power BI"],
-    icon: "📊",
+    icon: BarChart3,
   },
 
   "Cloud / DevOps": {
@@ -99,7 +108,7 @@ const PROJECTS = {
     difficulty: "Intermediate",
     duration: "2–3 weeks",
     skills: ["Git", "CI/CD", "Cloud"],
-    icon: "☁️",
+    icon: Cloud,
   },
 };
 
@@ -314,7 +323,6 @@ function getValidWebUrl(value) {
 
 function App() {
   const [page, setPage] = useState("home");
-  const [mobileMenu, setMobileMenu] = useState(false);
   const [user, setUser] = useState(readSavedUser);
   const [streak, setStreak] = useState(readSavedStreak);
 
@@ -407,20 +415,12 @@ function App() {
 
   const navigate = (nextPage) => {
     setPage(nextPage);
-    setMobileMenu(false);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
     <div className="app">
-      {page !== "home" && (
-        <Header
-          page={page}
-          navigate={navigate}
-          mobileMenu={mobileMenu}
-          setMobileMenu={setMobileMenu}
-        />
-      )}
+      {page !== "home" && <Header page={page} navigate={navigate} />}
 
       <main>
         {page === "home" && (
@@ -473,9 +473,7 @@ function App() {
         {page === "profile" && <Profile navigate={navigate} />}
       </main>
 
-      {page !== "home" && (
-        <BottomNavigation page={page} navigate={navigate} />
-      )}
+      <BottomNavigation page={page} navigate={navigate} />
     </div>
   );
 }
@@ -484,12 +482,7 @@ function App() {
    HEADER
 ========================= */
 
-function Header({
-  page,
-  navigate,
-  mobileMenu,
-  setMobileMenu,
-}) {
+function Header({ page, navigate }) {
   const navItems = [
     { id: "home", label: "Home" },
     { id: "dashboard", label: "Dashboard" },
@@ -548,38 +541,8 @@ function Header({
             <UserCircle size={31} />
           </button>
 
-          <button
-            className="mobile-menu-button"
-            onClick={() => setMobileMenu(!mobileMenu)}
-            aria-label="Open menu"
-          >
-            {mobileMenu ? <X size={23} /> : <Menu size={23} />}
-          </button>
         </div>
       </div>
-
-      {mobileMenu && (
-        <div className="mobile-menu">
-          {navItems.map((item) => (
-            <button
-              key={item.id}
-              className={`mobile-nav-link ${
-                page === item.id ? "active" : ""
-              }`}
-              onClick={() => navigate(item.id)}
-            >
-              {item.label}
-            </button>
-          ))}
-
-          <button
-            className="mobile-nav-link"
-            onClick={() => navigate("profile")}
-          >
-            Profile
-          </button>
-        </div>
-      )}
     </header>
   );
 }
@@ -735,19 +698,23 @@ function Home({ navigate, project, steps, user, onSignIn }) {
 
         <div className="feature-grid">
           <FeatureCard
-            icon={<Sparkles size={22} />}
+            icon={<Bot size={22} strokeWidth={2.2} />}
+            tone="guidance"
+            featured
             title="AI Project Guidance"
             text="Get one focused project idea based on the domain you want to learn."
           />
 
           <FeatureCard
-            icon={<Target size={22} />}
+            icon={<Route size={22} strokeWidth={2.2} />}
+            tone="roadmaps"
             title="Clear Roadmaps"
             text="Know exactly what to learn and build at every stage."
           />
 
           <FeatureCard
-            icon={<Folder size={22} />}
+            icon={<BriefcaseBusiness size={22} strokeWidth={2.2} />}
+            tone="portfolio"
             title="Portfolio Ready"
             text="Turn completed projects into strong portfolio pieces."
           />
@@ -1043,6 +1010,7 @@ function Dashboard({ navigate, project, steps, user, streak }) {
       <div className="stats-grid">
         <StatCard
           icon={<Flame size={20} />}
+          tone="streak"
           value={streak}
           label="Day streak"
           note={streak === 1 ? "Active today" : "Consecutive active days"}
@@ -1050,6 +1018,7 @@ function Dashboard({ navigate, project, steps, user, streak }) {
 
         <StatCard
           icon={<CheckCircle2 size={20} />}
+          tone="tasks"
           value={completedSteps}
           label="Tasks completed"
           note="Roadmap steps approved"
@@ -1057,6 +1026,7 @@ function Dashboard({ navigate, project, steps, user, streak }) {
 
         <StatCard
           icon={<Folder size={20} />}
+          tone="projects"
           value={project ? "01" : "00"}
           label="Projects"
           note={project ? "1 active project" : "No active projects"}
@@ -1064,6 +1034,7 @@ function Dashboard({ navigate, project, steps, user, streak }) {
 
         <StatCard
           icon={<Target size={20} />}
+          tone="progress"
           value={`${learningProgress}%`}
           label="Learning progress"
           note={`${completedSteps} of ${steps.length} steps approved`}
@@ -1086,7 +1057,9 @@ function Dashboard({ navigate, project, steps, user, streak }) {
           </p>
 
           <div className="project-meta">
-            <span>{project.icon}</span>
+            <span className="project-meta-icon">
+              <ProjectIcon icon={project.icon} size={20} />
+            </span>
             <span>{project.difficulty}</span>
             <span>•</span>
             <span>{project.duration}</span>
@@ -1531,7 +1504,7 @@ function Assistant({
             <div className="ai-result-content">
               <div className="ai-result-top">
                 <div className="ai-result-project-icon">
-                  {displayedProject.icon}
+                  <ProjectIcon icon={displayedProject.icon} size={28} />
                 </div>
 
                 <div>
@@ -1964,7 +1937,9 @@ function Portfolio({
       <div className="portfolio-grid">
         <div className="portfolio-card card">
           <div className="portfolio-image project-image-ai">
-            <span>{project.icon}</span>
+            <div className="project-emblem">
+              <ProjectIcon icon={project.icon} size={48} />
+            </div>
           </div>
 
           <div className="portfolio-content">
@@ -2233,14 +2208,22 @@ function Profile({ navigate }) {
    REUSABLE COMPONENTS
 ========================= */
 
-function FeatureCard({ icon, title, text }) {
+function FeatureCard({ icon, title, text, tone, featured = false }) {
   return (
-    <div className="feature-card card">
-      <div className="feature-icon">{icon}</div>
+    <div
+      className={`feature-card card feature-card-${tone} ${
+        featured ? "featured" : ""
+      }`}
+    >
+      <div className={`feature-icon feature-icon-${tone}`}>{icon}</div>
       <h3>{title}</h3>
       <p>{text}</p>
     </div>
   );
+}
+
+function ProjectIcon({ icon: Icon, size }) {
+  return <Icon aria-hidden="true" size={size} strokeWidth={1.9} />;
 }
 
 function PreviewStep({
@@ -2268,13 +2251,14 @@ function PreviewStep({
 
 function StatCard({
   icon,
+  tone,
   value,
   label,
   note,
 }) {
   return (
     <div className="stat-card card">
-      <div className="stat-icon">{icon}</div>
+      <div className={`stat-icon stat-icon-${tone}`}>{icon}</div>
 
       <div className="stat-value">{value}</div>
 

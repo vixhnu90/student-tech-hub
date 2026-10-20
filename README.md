@@ -1,5 +1,17 @@
 # React + Vite
 
+## Run Student Tech Hub
+
+The VS Code workspace task starts the development server automatically when
+the project folder opens. Allow automatic tasks when VS Code prompts you.
+Open the site at <http://127.0.0.1:5174/student-tech-hub/>.
+
+To start it manually in PowerShell, run:
+
+```powershell
+npm.cmd run dev -- --host 127.0.0.1 --port 5174 --strictPort
+```
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:
