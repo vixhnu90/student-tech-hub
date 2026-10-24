@@ -700,7 +700,6 @@ function Home({ navigate, project, steps, user, onSignIn }) {
           <FeatureCard
             icon={<Bot size={22} strokeWidth={2.2} />}
             tone="guidance"
-            featured
             title="AI Project Guidance"
             text="Get one focused project idea based on the domain you want to learn."
           />
@@ -802,7 +801,7 @@ function Home({ navigate, project, steps, user, onSignIn }) {
         </button>
       </section>
 
-      <Footer navigate={navigate} />
+      <Footer />
 
       {signInOpen && (
         <div
@@ -2309,7 +2308,7 @@ function BottomNavigation({ page, navigate }) {
   );
 }
 
-function Footer({ navigate }) {
+function Footer() {
   return (
     <footer className="footer">
       <div>
@@ -2317,20 +2316,6 @@ function Footer({ navigate }) {
         <span>
           A focused space for students who want to build.
         </span>
-      </div>
-
-      <div className="footer-links">
-        <button onClick={() => navigate("dashboard")}>
-          Dashboard
-        </button>
-
-        <button onClick={() => navigate("assistant")}>
-          AI Assistant
-        </button>
-
-        <button onClick={() => navigate("portfolio")}>
-          Portfolio
-        </button>
       </div>
 
       <span className="footer-copy">

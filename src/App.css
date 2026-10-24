@@ -37,27 +37,8 @@
   }
 }
 
-@keyframes navbar-electric-glow {
-  0%,
-  100% {
-    box-shadow:
-      0 12px 30px rgba(31, 41, 55, 0.1),
-      0 0 0 1px rgba(59, 130, 246, 0.14),
-      0 0 22px rgba(59, 130, 246, 0.14),
-      inset 0 1px 0 rgba(255, 255, 255, 0.95);
-  }
-  50% {
-    box-shadow:
-      0 14px 32px rgba(31, 41, 55, 0.12),
-      0 0 0 1px rgba(59, 130, 246, 0.38),
-      0 0 32px rgba(59, 130, 246, 0.28),
-      inset 0 1px 0 rgba(255, 255, 255, 0.95);
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .dashboard-window,
-  .header-inner,
   .build-pulse > span,
   .floating-pulse-dot,
   .progress-title i {
@@ -68,7 +49,7 @@
 :root {
   font-family: "Inter", sans-serif;
   color: #1f2937;
-  background: #fff6fa;
+  background: #f5f7fa;
   font-size: 16px;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -88,15 +69,15 @@ body {
   background:
     radial-gradient(
       circle at 15% 10%,
-      rgba(255, 180, 207, 0.25),
+      rgba(219, 230, 243, 0.36),
       transparent 34%
     ),
     radial-gradient(
       circle at 90% 25%,
-      rgba(255, 204, 222, 0.2),
+      rgba(228, 235, 243, 0.3),
       transparent 32%
     ),
-    linear-gradient(145deg, #fffdfd 5%, #fff6fa 55%, #fff0f6);
+    linear-gradient(145deg, #fbfcfd 5%, #f5f7fa 55%, #eef2f6);
 }
 
 button {
@@ -170,15 +151,11 @@ button {
   align-items: center;
   gap: 8px 20px;
   padding: 12px 22px 10px;
-  border: 1px solid #b9d4ff;
-  border-radius: 19px;
+  border: 1px solid #dce3eb;
+  border-radius: 12px;
   background: rgba(255, 255, 255, 0.96);
-  box-shadow:
-    0 18px 32px rgba(31, 41, 55, 0.12),
-    0 6px 18px rgba(59, 130, 246, 0.11),
-    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  box-shadow: 0 10px 28px rgba(31, 41, 55, 0.08);
   backdrop-filter: blur(12px);
-  animation: navbar-electric-glow 3.4s ease-in-out infinite;
 }
 
 .header-inner .brand {
@@ -252,7 +229,7 @@ button {
 .nav-link {
   position: relative;
   padding: 10px 18px;
-  border-radius: 11px;
+  border-radius: 7px;
   background: transparent;
   color: #374151;
   font-size: 1rem;
@@ -262,16 +239,12 @@ button {
 
 .nav-link:hover {
   color: #155ac5;
-  background: rgba(59, 130, 246, 0.09);
-  box-shadow: 0 0 16px rgba(59, 130, 246, 0.12);
+  background: #f1f5f9;
 }
 
 .nav-link.active {
   color: #ffffff;
-  background: linear-gradient(135deg, #1685ff, #4357f5 72%, #6849f5);
-  box-shadow:
-    0 6px 18px rgba(37, 99, 235, 0.3),
-    0 0 18px rgba(59, 130, 246, 0.24);
+  background: #24476b;
 }
 
 .nav-link.active::after {
@@ -395,14 +368,15 @@ button {
   min-height: 46px;
   padding: 0 19px;
   color: white;
-  background: linear-gradient(135deg, #5865f2, #7767f8);
-  border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(88, 101, 242, 0.2);
+  background: #24476b;
+  border-radius: 7px;
+  box-shadow: 0 5px 12px rgba(36, 71, 107, 0.14);
 }
 
 .primary-button:hover {
   transform: translateY(-2px);
-  box-shadow: 0 14px 30px rgba(88, 101, 242, 0.28);
+  background: #1c3a59;
+  box-shadow: 0 8px 16px rgba(36, 71, 107, 0.2);
 }
 
 .secondary-button {
@@ -411,7 +385,7 @@ button {
   color: #4d5870;
   background: white;
   border: 1px solid #e2e6f0;
-  border-radius: 12px;
+  border-radius: 7px;
 }
 
 .secondary-button:hover {
@@ -422,7 +396,7 @@ button {
 .small-button {
   min-height: 38px;
   padding: 0 13px;
-  border-radius: 10px;
+  border-radius: 6px;
   color: #5865f2;
   background: #f0f2ff;
   font-size: 12px;
@@ -1003,28 +977,6 @@ button {
   background: linear-gradient(145deg, #8e83ff, #6656dc 68%, #4b46b8);
 }
 
-.feature-card.featured {
-  border-color: #a8caff;
-  background:
-    radial-gradient(circle at 100% 0, rgba(79, 153, 255, 0.12), transparent 45%),
-    linear-gradient(145deg, #ffffff, #f2f7ff);
-  box-shadow:
-    0 15px 36px rgba(36, 92, 184, 0.12),
-    0 0 22px rgba(59, 130, 246, 0.12);
-}
-
-.feature-card.featured:hover {
-  transform: translateY(-4px);
-  border-color: #78aaff;
-  box-shadow:
-    0 20px 44px rgba(36, 92, 184, 0.17),
-    0 0 28px rgba(59, 130, 246, 0.2);
-}
-
-.feature-card.featured h3 {
-  color: #174a9b;
-}
-
 .feature-card h3 {
   margin: 22px 0 8px;
   font-size: 16px;
@@ -1193,7 +1145,7 @@ button {
   margin: 0 auto;
   padding: 30px 0 45px;
   display: grid;
-  grid-template-columns: 1fr auto auto;
+  grid-template-columns: 1fr auto;
   align-items: center;
   gap: 30px;
   border-top: 1px solid #e3e7f0;
@@ -1215,35 +1167,6 @@ button {
   color: #374151;
   font-size: 0.875rem;
   font-weight: 600;
-}
-
-.footer-links {
-  display: flex;
-  gap: 9px;
-}
-
-.footer-links button {
-  min-height: 38px;
-  padding: 0 13px;
-  border: 1px solid #dce3f0;
-  border-radius: 10px;
-  background: #ffffff;
-  color: #243452;
-  font-size: 12px;
-  font-weight: 700;
-  transition: 0.2s ease;
-}
-
-.footer-links button:hover {
-  border-color: #bfc9ff;
-  color: #5865f2;
-  background: #f4f5ff;
-  transform: translateY(-1px);
-}
-
-.footer-links button:focus-visible {
-  outline: 3px solid rgba(86, 94, 255, 0.25);
-  outline-offset: 2px;
 }
 
 .footer-copy {
@@ -3051,9 +2974,6 @@ button {
     width: calc(100% - 28px);
   }
 
-  .footer-links {
-    flex-wrap: wrap;
-  }
 }
 /* =========================
    NEW AI ASSISTANT CHATBOT
