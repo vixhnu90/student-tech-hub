@@ -500,7 +500,11 @@ function Header({ page, navigate }) {
           aria-label="Student Tech Hub home"
         >
           <div className="brand-mark">
-            <Sparkles size={19} />
+            <img
+              className="brand-logo"
+              src={`${import.meta.env.BASE_URL}student-tech-hub-logo.png`}
+              alt=""
+            />
           </div>
 
           <div className="brand-text">
