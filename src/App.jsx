@@ -1245,7 +1245,6 @@ function Assistant({
 
   const [input, setInput] = useState("");
   const [generated, setGenerated] = useState(false);
-  const [popupOpen, setPopupOpen] = useState(false);
 
   const currentQuestion = questions[step];
 
@@ -1376,6 +1375,12 @@ function Assistant({
               <strong>Student Tech AI</strong>
               <span>Personal Project Assistant</span>
             </div>
+
+            <img
+              className="ai-assistant-robot"
+              src={`${import.meta.env.BASE_URL}ai-assistant-robot.png`}
+              alt="A friendly robot waving toward the AI assistant"
+            />
 
             <div className="ai-online">
               <span></span>
@@ -1572,54 +1577,6 @@ function Assistant({
           )}
         </aside>
       </div>
-
-      {/* =========================
-          FLOATING CHAT BUTTON
-      ========================= */}
-      <button
-        className="ai-floating-button"
-        onClick={() => setPopupOpen((prev) => !prev)}
-        aria-label="Open AI chatbot"
-      >
-        <Sparkles size={21} />
-      </button>
-
-      {popupOpen && (
-        <div className="ai-floating-popup">
-          <div className="ai-floating-popup-header">
-            <div>
-              <strong>AI Assistant</strong>
-              <span>Need help choosing a project?</span>
-            </div>
-
-            <button
-              onClick={() => setPopupOpen(false)}
-              aria-label="Close chatbot"
-            >
-              <X size={16} />
-            </button>
-          </div>
-
-          <p>
-            Answer a few questions and I'll recommend a project
-            specifically for you.
-          </p>
-
-          <button
-            onClick={() => {
-              setPopupOpen(false);
-              window.scrollTo({
-                top: 0,
-                behavior: "smooth",
-              });
-            }}
-            className="ai-popup-open-button"
-          >
-            Open Assistant
-            <ArrowRight size={15} />
-          </button>
-        </div>
-      )}
     </div>
   );
 }
@@ -1634,6 +1591,7 @@ function Roadmap({
   steps,
   submitStepProof,
 }) {
+  const [popupOpen, setPopupOpen] = useState(false);
   const completedSteps = steps.filter(
     (step) => step.status === "done"
   ).length;
@@ -1711,15 +1669,49 @@ function Roadmap({
             </p>
           </div>
         </div>
-
-        <button
-          className="ai-question"
-          onClick={() => navigate("assistant")}
-        >
-          <Sparkles size={17} />
-          Ask AI for help
-        </button>
       </div>
+
+      <button
+        className="ai-floating-button"
+        onClick={() => setPopupOpen((prev) => !prev)}
+        aria-label="Open AI assistant help"
+        title="Open AI assistant help"
+      >
+        <Sparkles size={21} />
+      </button>
+
+      {popupOpen && (
+        <div className="ai-floating-popup">
+          <div className="ai-floating-popup-header">
+            <div>
+              <strong>AI Assistant</strong>
+              <span>Need help with your project?</span>
+            </div>
+
+            <button
+              onClick={() => setPopupOpen(false)}
+              aria-label="Close chatbot"
+            >
+              <X size={16} />
+            </button>
+          </div>
+
+          <p>
+            Get a personalized project recommendation from the AI assistant.
+          </p>
+
+          <button
+            onClick={() => {
+              setPopupOpen(false);
+              navigate("assistant");
+            }}
+            className="ai-popup-open-button"
+          >
+            Open Assistant
+            <ArrowRight size={15} />
+          </button>
+        </div>
+      )}
     </div>
   );
 }
