@@ -1591,7 +1591,6 @@ function Roadmap({
   steps,
   submitStepProof,
 }) {
-  const [popupOpen, setPopupOpen] = useState(false);
   const completedSteps = steps.filter(
     (step) => step.status === "done"
   ).length;
@@ -1673,45 +1672,12 @@ function Roadmap({
 
       <button
         className="ai-floating-button"
-        onClick={() => setPopupOpen((prev) => !prev)}
-        aria-label="Open AI assistant help"
-        title="Open AI assistant help"
+        onClick={() => navigate("assistant")}
+        aria-label="Go to AI assistant"
+        title="Go to AI assistant"
       >
         <Sparkles size={21} />
       </button>
-
-      {popupOpen && (
-        <div className="ai-floating-popup">
-          <div className="ai-floating-popup-header">
-            <div>
-              <strong>AI Assistant</strong>
-              <span>Need help with your project?</span>
-            </div>
-
-            <button
-              onClick={() => setPopupOpen(false)}
-              aria-label="Close chatbot"
-            >
-              <X size={16} />
-            </button>
-          </div>
-
-          <p>
-            Get a personalized project recommendation from the AI assistant.
-          </p>
-
-          <button
-            onClick={() => {
-              setPopupOpen(false);
-              navigate("assistant");
-            }}
-            className="ai-popup-open-button"
-          >
-            Open Assistant
-            <ArrowRight size={15} />
-          </button>
-        </div>
-      )}
     </div>
   );
 }
